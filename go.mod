@@ -1,4 +1,4 @@
-module devstash.vanderlande.com/projects/TECHPLAT/repos/vidatabase-go
+module github.com/MarcHeimann/go-database
 
 go 1.14
 
