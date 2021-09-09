@@ -38,6 +38,8 @@ func ConnectToDatabase(d DatabaseCredentials) (string, error) {
 	activecredentials = d
 	checkAndCreateDatabase()
 
+	log.Info("********* NEW MESSAGE ******")
+
 	return "Success", nil
 }
 
