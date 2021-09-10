@@ -19,17 +19,6 @@ type DatabaseCredentials struct {
 	Table    string
 }
 
-type Aggregate interface {
-	GetUpdateStatement() string
-	UpdateAggregate() string
-}
-
-type AggregateTable interface {
-	UpdateAggregateTable() (string, error)
-	MigrateAggregateTable() (string, error)
-	DeleteAggregateTable() (string, error)
-}
-
 var activecredentials DatabaseCredentials
 
 var pool *pgxpool.Pool
@@ -67,9 +56,5 @@ func checkAndCreateDatabase() (string, error) {
 
 	log.Info(row)
 
-	return "Success", nil
-}
-
-func UpdateDatabaseTable(at AggregateTable) (string, error) {
 	return "Success", nil
 }
