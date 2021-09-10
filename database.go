@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	log "github.com/sirupsen/logrus"
 )
@@ -16,6 +17,17 @@ type DatabaseCredentials struct {
 	Port     string
 	Database string
 	Table    string
+}
+
+type Aggregate interface {
+	GetUpdateStatement() string
+	UpdateAggregate() string
+}
+
+type AggregateTable interface {
+	UpdateAggregate() (string, error)
+	MigrateAggregate() (string, error)
+	DeleteAggregate() (string, error)
 }
 
 var activecredentials DatabaseCredentials
@@ -38,25 +50,26 @@ func ConnectToDatabase(d DatabaseCredentials) (string, error) {
 	activecredentials = d
 	checkAndCreateDatabase()
 
-	log.Info("********* NEW MESSAGE ******")
-
 	return "Success", nil
 }
 
 func checkAndCreateDatabase() (string, error) {
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error acquiring connection:", err)
+		log.Error(os.Stderr, "Error acquiring connection:", err)
 		os.Exit(1)
 	}
 	defer conn.Release()
 
 	var checkDBStatement string = "SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('" + activecredentials.Database + "');"
 	log.Info(checkDBStatement)
-	// var statement string = "SELECT table_schema || '.' || table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema NOT IN ('pg_catalog', 'information_schema');"
+	var row pgx.Row = conn.QueryRow(context.Background(), checkDBStatement)
 
-	// err = conn.QueryRow(context.Background(), "select name from widgets where id=$1", 42).Scan(&name, &weight)
-	conn.QueryRow(context.Background(), checkDBStatement)
+	log.Info(row)
 
+	return "Success", nil
+}
+
+func UpdateDatabaseTable(at AggregateTable) (string, error) {
 	return "Success", nil
 }
