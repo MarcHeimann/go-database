@@ -25,9 +25,9 @@ type Aggregate interface {
 }
 
 type AggregateTable interface {
-	UpdateAggregate() (string, error)
-	MigrateAggregate() (string, error)
-	DeleteAggregate() (string, error)
+	UpdateAggregateTable() (string, error)
+	MigrateAggregateTable() (string, error)
+	DeleteAggregateTable() (string, error)
 }
 
 var activecredentials DatabaseCredentials
