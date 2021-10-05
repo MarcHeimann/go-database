@@ -58,3 +58,22 @@ func checkAndCreateDatabase() (string, error) {
 
 	return "Success", nil
 }
+
+func createTableForAggregate(def string) error {
+	conn, err := pool.Acquire(context.Background())
+	if err != nil {
+		log.Error(os.Stderr, "Error acquiring connection:", err)
+		os.Exit(1)
+	}
+	defer conn.Release()
+
+	log.Info("Creating database table")
+
+	var queryString string = "SELECT EXISTS ( SELECT FROM pg_catalog.pg_class c JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace WHERE  n.nspname = '#{activecredentials.Database}' AND    c.relname = '#{activecredentials.Table}' AND    c.relkind = 'r');"
+
+	var row pgx.Row = conn.QueryRow(context.Background(), queryString)
+
+	log.Info(row)
+
+	return nil
+}
