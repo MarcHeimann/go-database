@@ -59,7 +59,7 @@ func checkAndCreateDatabase() (string, error) {
 	return "Success", nil
 }
 
-func createTableForAggregate(def string) error {
+func CreateTableForAggregate(def string) error {
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
 		log.Error(os.Stderr, "Error acquiring connection:", err)
